@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class RequestValue<T> extends AbstractRequestValue<T> {
 
-
+  @Valid
   @NotNull(message = "报文头不能为空！")
   private Head head;
 
