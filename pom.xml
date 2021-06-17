@@ -6,7 +6,7 @@
 
   <groupId>com.v1ok</groupId>
   <artifactId>spring-boot-auth</artifactId>
-  <version>251.0.1</version>
+  <version>251.0.2</version>
   <name>spring-boot-auth</name>
   <description>spring boot auth</description>
   <url>http://www.v1ok.com</url>
@@ -143,7 +143,7 @@
               <goal>jar</goal>
             </goals>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <doclint>none</doclint>
             </configuration>
             <phase>package</phase>
           </execution>
