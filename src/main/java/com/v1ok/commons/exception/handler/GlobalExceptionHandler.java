@@ -1,4 +1,4 @@
-package com.v1ok.commons.error;
+package com.v1ok.commons.exception.handler;
 
 import com.v1ok.commons.HeadCode;
 import com.v1ok.commons.IRestResponse;
@@ -27,11 +27,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ResponseStatus(HttpStatus.OK)
   @ExceptionHandler(Exception.class)
   @ResponseBody
-  public IRestResponse<?> exceptionHandler(Exception exception){
-    log.error("服务器运行时出错未知错误",exception);
+  public IRestResponse<?> exceptionHandler(Exception exception) {
+    log.error("服务器运行时出错未知错误", exception);
     return RestResponse.builder().error(HeadCode.ERROR).message(exception.getMessage());
   }
-
 
 
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -64,8 +63,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       if (!errors.isEmpty()) {
         // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
         FieldError fieldError = (FieldError) errors.get(0);
-        return ResponseEntity.badRequest()
-            .body(fieldError.getField() + ":" + fieldError.getDefaultMessage());
+        return ResponseEntity.ok()
+            .body(RestResponse.builder().error(HeadCode.BAD_REQUEST)
+                .message(fieldError.getField() + ":" + fieldError.getDefaultMessage()));
       }
     }
     return ResponseEntity.badRequest().body(exception.getMessage());
