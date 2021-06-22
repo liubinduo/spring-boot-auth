@@ -3,6 +3,7 @@ package com.v1ok.commons.exception.handler;
 import com.v1ok.commons.HeadCode;
 import com.v1ok.commons.IRestResponse;
 import com.v1ok.commons.exception.AuthorityException;
+import com.v1ok.commons.exception.OperationException;
 import com.v1ok.commons.impl.RestResponse;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   public IRestResponse<?> exceptionHandler(Exception exception) {
     log.error("服务器运行时出错未知错误", exception);
     return RestResponse.builder().error(HeadCode.ERROR).message(exception.getMessage());
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @ExceptionHandler(OperationException.class)
+  @ResponseBody
+  public IRestResponse<?> exceptionHandler(OperationException exception) {
+    log.error("服务器运行时出错", exception);
+    return RestResponse.builder().error(HeadCode.BAD_REQUEST).message(exception.getMessage());
   }
 
 
