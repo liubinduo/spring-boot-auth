@@ -1,8 +1,8 @@
 package com.v1ok.commons.impl;
 
 
+import com.v1ok.auth.IContext;
 import com.v1ok.auth.IUserContext;
-import com.v1ok.commons.IContext;
 import lombok.ToString;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
