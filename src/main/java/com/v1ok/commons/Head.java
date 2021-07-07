@@ -14,7 +14,6 @@ public class Head {
 
   private String token;
 
-  @NotBlank(message = "租户ID不能为空")
   private String tenantId;
 
   private String actionCode;

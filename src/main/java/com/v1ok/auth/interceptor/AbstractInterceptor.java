@@ -20,7 +20,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Slf4j
 public abstract class AbstractInterceptor {
 
-  protected static final String TOKEN = "token";
+  public static final String HTTP_HEAD_TOKEN = "X-token";
+  public static final String TOKEN = "token";
 
   public AbstractInterceptor() {
   }
@@ -127,13 +128,7 @@ public abstract class AbstractInterceptor {
 
   protected String getToken(Head head) {
     String token;
-    //请求体里的token优先级最高
-    if (head != null) {
-      token = head.getToken();
-      if (StringUtils.isNoneBlank(token)) {
-        return token;
-      }
-    }
+
 
     HttpServletRequest request = ((ServletRequestAttributes) Objects
         .requireNonNull(RequestContextHolder
@@ -141,17 +136,26 @@ public abstract class AbstractInterceptor {
 
     if (request != null) {
 
+      //浏览器的head头中的token优先级最高
+      token = request.getHeader(HTTP_HEAD_TOKEN);
+      if (StringUtils.isNotEmpty(token)) {
+        return token;
+      }
+
       //其次是url上的参数
       token = request.getParameter(TOKEN);
       if (StringUtils.isNotEmpty(token)) {
         return token;
       }
 
-      //最后浏览器的head头中的token
-      token = request.getHeader(TOKEN);
-      if (StringUtils.isNotEmpty(token)) {
-        return token;
+      //其次请求体里的token
+      if (head != null) {
+        token = head.getToken();
+        if (StringUtils.isNoneBlank(token)) {
+          return token;
+        }
       }
+
     }
 
     return null;
