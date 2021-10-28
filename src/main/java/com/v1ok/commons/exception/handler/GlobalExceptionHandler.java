@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -50,25 +52,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return RestResponse.builder().error(HeadCode.UN_AUTHORIZED);
   }
 
-  /**
-   * Customize the response for MethodArgumentNotValidException.
-   * <p>This method delegates to {@link #handleExceptionInternal}.
-   *
-   * @param exception the exception
-   * @param headers the headers to be written to the response
-   * @param status the selected response status
-   * @param request the current request
-   * @return a {@code ResponseEntity} instance
-   */
   @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException exception,
-      HttpHeaders headers, HttpStatus status, WebRequest request) {
+  protected ResponseEntity<Object> handleBindException(
+      BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-    BindingResult exceptions = exception.getBindingResult();
-    // 判断异常中是否有错误信息，如果存在就使用异常中的消息，否则使用默认消息
-    if (exceptions.hasErrors()) {
-      List<ObjectError> errors = exceptions.getAllErrors();
+    ResponseEntity<Object> responseEntity = super.handleBindException(ex, headers, status, request);
+
+    BindingResult bindingResult = ex.getBindingResult();
+
+    if (bindingResult.hasErrors()) {
+      List<ObjectError> errors = bindingResult.getAllErrors();
       if (!errors.isEmpty()) {
         // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
         FieldError fieldError = (FieldError) errors.get(0);
@@ -77,8 +70,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(fieldError.getField() + ":" + fieldError.getDefaultMessage()));
       }
     }
-    log.error("参数校验出错", exception);
 
-    return ResponseEntity.badRequest().body(exception.getMessage());
+    return responseEntity;
   }
+
 }
