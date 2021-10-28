@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.WebUtils;
 
 @RestControllerAdvice
 @Slf4j
@@ -72,6 +73,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     return responseEntity;
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleExceptionInternal(
+      Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status,
+      WebRequest request) {
+
+    if (HttpStatus.INTERNAL_SERVER_ERROR.equals(status)) {
+      request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
+    }
+
+    log.error("服务器运行出错：", ex);
+
+    return new ResponseEntity<>(ex.getMessage(), headers, status);
   }
 
 }
