@@ -86,7 +86,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     log.error("服务器运行出错：", ex);
 
-    return new ResponseEntity<>(ex.getMessage(), headers, status);
+    return ResponseEntity.ok()
+        .body(RestResponse.builder().error(HeadCode.BAD_REQUEST)
+            .message(ex.getMessage()));
   }
 
 }
