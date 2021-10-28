@@ -77,6 +77,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(fieldError.getField() + ":" + fieldError.getDefaultMessage()));
       }
     }
+    log.error("参数校验出错", exception);
+
     return ResponseEntity.badRequest().body(exception.getMessage());
   }
 }
