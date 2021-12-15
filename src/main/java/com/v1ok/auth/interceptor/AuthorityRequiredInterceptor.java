@@ -34,7 +34,8 @@ public class AuthorityRequiredInterceptor extends AbstractInterceptor {
 
 
   @Around("@annotation(com.v1ok.commons.annotation.AuthorityRequired) && @annotation(authority)")
-  public Object interceptor(ProceedingJoinPoint point, AuthorityRequired authority) {
+  public Object interceptor(ProceedingJoinPoint point, AuthorityRequired authority)
+      throws Throwable {
 
     RequestValue<?> value = getRequestValue(point);
 

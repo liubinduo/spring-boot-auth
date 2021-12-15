@@ -30,7 +30,7 @@ public abstract class AbstractInterceptor {
 
   protected abstract String generateToken(IUserContext context);
 
-  protected Object exec(IUserContext userContext, ProceedingJoinPoint point) {
+  protected Object exec(IUserContext userContext, ProceedingJoinPoint point) throws Throwable {
 
     Head head = this.getHead(point);
     if ((isGet() || isDelete()) && head != null) {
@@ -52,8 +52,6 @@ public abstract class AbstractInterceptor {
 
       return proceed;
 
-    } catch (Throwable throwable) {
-      throw new RuntimeException(throwable);
     } finally {
       ContextHolder.getHolder().remove();
     }
@@ -128,7 +126,6 @@ public abstract class AbstractInterceptor {
 
   protected String getToken(Head head) {
     String token;
-
 
     HttpServletRequest request = ((ServletRequestAttributes) Objects
         .requireNonNull(RequestContextHolder

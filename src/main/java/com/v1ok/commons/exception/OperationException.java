@@ -1,6 +1,6 @@
 package com.v1ok.commons.exception;
 
-public class OperationException extends Error {
+public class OperationException extends RuntimeException {
 
   public OperationException() {
     super();

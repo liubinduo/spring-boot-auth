@@ -53,6 +53,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return RestResponse.builder().error(HeadCode.UN_AUTHORIZED);
   }
 
+  @ResponseStatus(HttpStatus.OK)
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+      HttpHeaders headers, HttpStatus status, WebRequest request) {
+    log.error("服务器运行时出错", ex);
+
+    ResponseEntity<Object> responseEntity = super.handleMethodArgumentNotValid(ex, headers, status,
+        request);
+
+    BindingResult bindingResult = ex.getBindingResult();
+
+    if (bindingResult.hasErrors()) {
+      List<ObjectError> errors = bindingResult.getAllErrors();
+      if (!errors.isEmpty()) {
+        // 这里列出了全部错误参数，按正常逻辑，只需要第一条错误即可
+        FieldError fieldError = (FieldError) errors.get(0);
+        return ResponseEntity.ok()
+            .body(RestResponse.builder().error(HeadCode.BAD_REQUEST)
+                .message(fieldError.getField() + ":" + fieldError.getDefaultMessage()));
+      }
+    }
+
+    return responseEntity;
+  }
+
   @Override
   protected ResponseEntity<Object> handleBindException(
       BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

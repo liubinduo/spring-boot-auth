@@ -24,7 +24,7 @@ public class ServiceAuthInterceptor extends AbstractInterceptor {
   }
 
   @Around("@annotation(com.v1ok.commons.annotation.ServiceAuth) && @annotation(serviceAuth)")
-  public Object Interceptor(ProceedingJoinPoint point, ServiceAuth serviceAuth) {
+  public Object Interceptor(ProceedingJoinPoint point, ServiceAuth serviceAuth) throws Throwable {
 
     RequestValue<?> value = getRequestValue(point);
 
